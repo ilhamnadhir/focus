@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply bg-neu-base text-graphite-600 font-sans antialiased;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+
+  /* Neumorphic base styles */
+  .neu-surface {
+    @apply bg-neu-base rounded-neu shadow-neu;
+  }
+
+  .neu-surface-sm {
+    @apply bg-neu-base rounded-neu-sm shadow-neu-sm;
+  }
+
+  .neu-surface-lg {
+    @apply bg-neu-base rounded-neu-lg shadow-neu-lg;
+  }
+
+  .neu-inset {
+    @apply bg-neu-base rounded-neu shadow-neu-inset;
+  }
+
+  /* Button pressed state */
+  .neu-pressed {
+    @apply shadow-neu-inset;
+  }
+
+  /* Smooth transitions */
+  .transition-neu {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+@layer utilities {
+
+  /* Custom scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-neu-base rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-coral-400 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-coral-500;
+  }
+}
