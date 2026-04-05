@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import NeumorphicButton from '../ui/NeumorphicButton';
-import { FiHome, FiTarget, FiCheckSquare, FiTrendingUp, FiLogOut, FiUser, FiSun, FiMoon } from 'react-icons/fi';
+import { FiHome, FiTarget, FiCheckSquare, FiTrendingUp, FiLogOut, FiUser, FiSun, FiMoon, FiUsers } from 'react-icons/fi';
 
 const Navbar = () => {
     const { user, signOut } = useAuth();
@@ -27,6 +27,7 @@ const Navbar = () => {
         { path: '/focus', icon: FiTarget, label: 'Focus' },
         { path: '/tasks', icon: FiCheckSquare, label: 'Tasks' },
         { path: '/leaderboard', icon: FiTrendingUp, label: 'Leaderboard' },
+        { path: '/channels', icon: FiUsers, label: 'Channels' },
     ];
 
     const isActive = (path) => location.pathname === path;

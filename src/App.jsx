@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Focus from './pages/Focus';
 import Tasks from './pages/Tasks';
 import Leaderboard from './pages/Leaderboard';
+import Channels from './pages/Channels';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -71,6 +72,15 @@ function App() {
                             <ProtectedRoute>
                                 <Navbar />
                                 <Leaderboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/channels"
+                        element={
+                            <ProtectedRoute>
+                                <Navbar />
+                                <Channels />
                             </ProtectedRoute>
                         }
                     />
