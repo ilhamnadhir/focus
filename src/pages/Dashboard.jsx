@@ -11,6 +11,7 @@ const Dashboard = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [todayFocusTime, setTodayFocusTime] = useState(0);
+    const [totalFocusTime, setTotalFocusTime] = useState(0);
     const [todayTasks, setTodayTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,6 +30,10 @@ const Dashboard = () => {
             const todaySessions = sessions.filter(s => s.date === today && s.userId === user.uid);
             const totalTime = todaySessions.reduce((sum, session) => sum + session.duration, 0);
             setTodayFocusTime(totalTime);
+
+            // Fetch absolute total focus time
+            const storedUser = JSON.parse(localStorage.getItem('focusUser') || '{}');
+            setTotalFocusTime(storedUser.totalFocusTime || 0);
 
             // Fetch tasks from localStorage
             const tasks = JSON.parse(localStorage.getItem('focusTasks') || '[]');
@@ -141,8 +146,8 @@ const Dashboard = () => {
                                     <FiTarget className="text-coral-500 text-xl" />
                                 </div>
                                 <div>
-                                    <p className="text-graphite-500 text-sm">Daily Target</p>
-                                    <p className="text-2xl font-bold text-graphite-600">2h 0m</p>
+                                    <p className="text-graphite-500 text-sm">All-time Focus</p>
+                                    <p className="text-2xl font-bold text-graphite-600">{formatTime(totalFocusTime)}</p>
                                 </div>
                             </div>
                         </NeumorphicCard>

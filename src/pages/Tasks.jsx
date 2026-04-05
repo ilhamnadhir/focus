@@ -10,6 +10,7 @@ const Tasks = () => {
     const { user } = useAuth();
     const [tasks, setTasks] = useState([]);
     const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [estimatedSessions, setEstimatedSessions] = useState(1);
     const [filter, setFilter] = useState('all'); // 'all', 'active', 'completed'
     const [loading, setLoading] = useState(true);
 
@@ -43,12 +44,14 @@ const Tasks = () => {
                 id: Date.now().toString(),
                 userId: user.uid,
                 title: newTaskTitle,
+                estimatedSessions: parseInt(estimatedSessions, 10) || 1,
                 completed: false,
                 createdAt: new Date().toISOString(),
             };
             allTasks.push(newTask);
             localStorage.setItem('focusTasks', JSON.stringify(allTasks));
             setNewTaskTitle('');
+            setEstimatedSessions(1);
             loadTasks();
         } catch (error) {
             console.error('Error adding task:', error);
@@ -141,6 +144,15 @@ const Tasks = () => {
                                 onChange={(e) => setNewTaskTitle(e.target.value)}
                                 className="flex-1"
                             />
+                            <div className="w-24">
+                                <NeumorphicInput
+                                    type="number"
+                                    min="1"
+                                    placeholder="Est."
+                                    value={estimatedSessions}
+                                    onChange={(e) => setEstimatedSessions(e.target.value)}
+                                />
+                            </div>
                             <NeumorphicButton
                                 type="submit"
                                 icon={<FiPlus size={20} />}
@@ -209,18 +221,17 @@ const Tasks = () => {
                                             {task.completed && <FiCheck className="text-white" size={16} />}
                                         </button>
 
-                                        {/* Task Title */}
-                                        <span
-                                            className={`
-                        flex-1 transition-all duration-300
-                        ${task.completed
-                                                    ? 'line-through text-graphite-400'
-                                                    : 'text-graphite-600'
-                                                }
-                      `}
-                                        >
-                                            {task.title}
-                                        </span>
+                                        {/* Task Details */}
+                                        <div className={`flex-1 transition-all duration-300 ${task.completed ? 'opacity-60' : ''}`}>
+                                            <div className={`${task.completed ? 'line-through text-graphite-400' : 'text-graphite-600'}`}>
+                                                {task.title}
+                                            </div>
+                                            {task.estimatedSessions > 0 && (
+                                                <div className="text-xs text-graphite-400 mt-1">
+                                                    🎯 {task.estimatedSessions} session{task.estimatedSessions > 1 ? 's' : ''} est.
+                                                </div>
+                                            )}
+                                        </div>
 
                                         {/* Delete Button */}
                                         <button

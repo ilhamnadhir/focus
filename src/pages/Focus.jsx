@@ -6,20 +6,26 @@ import useTimer from '../hooks/useTimer';
 import CircularProgress from '../components/ui/CircularProgress';
 import NeumorphicButton from '../components/ui/NeumorphicButton';
 import NeumorphicCard from '../components/ui/NeumorphicCard';
+import NeumorphicInput from '../components/ui/NeumorphicInput';
 import { FiPlay, FiPause, FiRotateCcw } from 'react-icons/fi';
 
 const POMODORO_PRESETS = {
     '25:5': { focus: 25 * 60, break: 5 * 60 },
     '50:10': { focus: 50 * 60, break: 10 * 60 },
+    'Custom': { focus: 0, break: 0 }
 };
 
 const Focus = () => {
     const { user } = useAuth();
     const [selectedPreset, setSelectedPreset] = useState('25:5');
+    const [customFocus, setCustomFocus] = useState(25);
+    const [customBreak, setCustomBreak] = useState(5);
     const [sessionType, setSessionType] = useState('focus'); // 'focus' or 'break'
     const [sessionStartTime, setSessionStartTime] = useState(null);
 
-    const preset = POMODORO_PRESETS[selectedPreset];
+    const preset = selectedPreset === 'Custom' 
+        ? { focus: customFocus * 60, break: customBreak * 60 }
+        : POMODORO_PRESETS[selectedPreset];
     const initialTime = sessionType === 'focus' ? preset.focus : preset.break;
 
     const handleSessionComplete = async () => {
@@ -59,7 +65,7 @@ const Focus = () => {
 
     useEffect(() => {
         timer.reset(initialTime);
-    }, [sessionType, selectedPreset]);
+    }, [sessionType, selectedPreset, customFocus, customBreak]);
 
     const handleStart = () => {
         if (!timer.isRunning) {
@@ -112,16 +118,48 @@ const Focus = () => {
                             animate={{ opacity: 1 }}
                             className="mb-8 flex justify-center gap-4"
                         >
-                            {Object.keys(POMODORO_PRESETS).map((preset) => (
+                            {Object.keys(POMODORO_PRESETS).map((p) => (
                                 <NeumorphicButton
-                                    key={preset}
-                                    onClick={() => setSelectedPreset(preset)}
-                                    variant={selectedPreset === preset ? 'primary' : 'secondary'}
-                                    className={selectedPreset === preset ? 'ring-2 ring-coral-400' : ''}
+                                    key={p}
+                                    onClick={() => setSelectedPreset(p)}
+                                    variant={selectedPreset === p ? 'primary' : 'secondary'}
+                                    className={selectedPreset === p ? 'ring-2 ring-coral-400' : ''}
                                 >
-                                    {preset}
+                                    {p}
                                 </NeumorphicButton>
                             ))}
+                        </motion.div>
+                    )}
+
+                    {/* Custom Inputs */}
+                    {selectedPreset === 'Custom' && !timer.isRunning && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="mb-8 flex justify-center gap-6 items-center"
+                        >
+                            <div className="flex items-center gap-2">
+                                <span className="text-graphite-500 text-sm">Focus</span>
+                                <div className="w-24">
+                                    <NeumorphicInput
+                                        type="number"
+                                        min="1"
+                                        value={customFocus}
+                                        onChange={(e) => setCustomFocus(Number(e.target.value))}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-graphite-500 text-sm">Break</span>
+                                <div className="w-24">
+                                    <NeumorphicInput
+                                        type="number"
+                                        min="1"
+                                        value={customBreak}
+                                        onChange={(e) => setCustomBreak(Number(e.target.value))}
+                                    />
+                                </div>
+                            </div>
                         </motion.div>
                     )}
 
