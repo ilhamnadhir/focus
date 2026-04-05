@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import NeumorphicButton from '../ui/NeumorphicButton';
-import { FiHome, FiTarget, FiCheckSquare, FiTrendingUp, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiHome, FiTarget, FiCheckSquare, FiTrendingUp, FiLogOut, FiUser, FiSun, FiMoon } from 'react-icons/fi';
 
 const Navbar = () => {
     const { user, signOut } = useAuth();
+    const { isDarkMode, toggleTheme } = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -64,8 +66,19 @@ const Navbar = () => {
                         ))}
                     </div>
 
-                    {/* User Menu */}
-                    <div className="relative">
+                    {/* Right side interactions */}
+                    <div className="flex items-center gap-4">
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full text-graphite-500 hover:text-coral-500 neu-surface hover:shadow-neu-inset transition-all"
+                            aria-label="Toggle Dark Mode"
+                        >
+                            {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
+                        </button>
+
+                        {/* User Menu */}
+                        <div className="relative">
                         <button
                             onClick={() => setShowUserMenu(!showUserMenu)}
                             className="flex items-center gap-3 neu-surface px-4 py-2 rounded-neu-sm hover:shadow-neu-inset transition-all"
@@ -109,6 +122,7 @@ const Navbar = () => {
                                 </motion.div>
                             )}
                         </AnimatePresence>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -4,13 +4,14 @@ export default {
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
-                // Neumorphic color palette based on UI reference
-                'neu-base': '#e4e7ec',
-                'neu-dark': '#d1d5db',
-                'neu-light': '#ffffff',
+                // Neumorphic color palette based on CSS variables
+                'neu-base': 'var(--color-neu-base)',
+                'neu-dark': 'var(--color-neu-dark)',
+                'neu-light': 'var(--color-neu-light)',
                 'coral': {
                     100: '#ffd4d4',
                     200: '#ffb8b8',
@@ -20,21 +21,21 @@ export default {
                     600: '#e85d5d',
                 },
                 'graphite': {
-                    100: '#f5f5f5',
-                    200: '#e0e0e0',
-                    300: '#bdbdbd',
-                    400: '#9e9e9e',
-                    500: '#757575',
-                    600: '#616161',
+                    100: 'var(--color-graphite-100)',
+                    200: 'var(--color-graphite-200)',
+                    300: 'var(--color-graphite-300)',
+                    400: 'var(--color-graphite-400)',
+                    500: 'var(--color-graphite-500)',
+                    600: 'var(--color-graphite-600)',
                 }
             },
             boxShadow: {
-                // Neumorphic shadows
-                'neu': '8px 8px 16px #d1d5db, -8px -8px 16px #ffffff',
-                'neu-sm': '4px 4px 8px #d1d5db, -4px -4px 8px #ffffff',
-                'neu-lg': '12px 12px 24px #d1d5db, -12px -12px 24px #ffffff',
-                'neu-inset': 'inset 4px 4px 8px #d1d5db, inset -4px -4px 8px #ffffff',
-                'neu-inset-sm': 'inset 2px 2px 4px #d1d5db, inset -2px -2px 4px #ffffff',
+                // Neumorphic shadows connected to CSS variables
+                'neu': '8px 8px 16px var(--shadow-neu-dark-val), -8px -8px 16px var(--shadow-neu-light-val)',
+                'neu-sm': '4px 4px 8px var(--shadow-neu-dark-val), -4px -4px 8px var(--shadow-neu-light-val)',
+                'neu-lg': '12px 12px 24px var(--shadow-neu-dark-val), -12px -12px 24px var(--shadow-neu-light-val)',
+                'neu-inset': 'inset 4px 4px 8px var(--shadow-neu-dark-val), inset -4px -4px 8px var(--shadow-neu-light-val)',
+                'neu-inset-sm': 'inset 2px 2px 4px var(--shadow-neu-dark-val), inset -2px -2px 4px var(--shadow-neu-light-val)',
             },
             borderRadius: {
                 'neu': '20px',

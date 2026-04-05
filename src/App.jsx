@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Navbar from './components/layout/Navbar';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -29,8 +30,9 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
     return (
-        <AuthProvider>
-            <Router>
+        <ThemeProvider>
+            <AuthProvider>
+                <Router>
                 <Routes>
                     {/* Public Route */}
                     <Route path="/login" element={<Login />} />
@@ -79,6 +81,7 @@ function App() {
                 </Routes>
             </Router>
         </AuthProvider>
+        </ThemeProvider>
     );
 }
 
