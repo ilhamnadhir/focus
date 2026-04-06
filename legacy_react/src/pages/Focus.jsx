@@ -17,6 +17,7 @@ const POMODORO_PRESETS = {
 
 const Focus = () => {
     const { user } = useAuth();
+    const shouldStartRef = React.useRef(false);
     const [selectedPreset, setSelectedPreset] = useState('25:5');
     const [customFocus, setCustomFocus] = useState(25);
     const [customBreak, setCustomBreak] = useState(5);
@@ -65,6 +66,10 @@ const Focus = () => {
 
     useEffect(() => {
         timer.reset(initialTime);
+        if (shouldStartRef.current) {
+            timer.start();
+            shouldStartRef.current = false;
+        }
     }, [sessionType, selectedPreset, customFocus, customBreak]);
 
     const handleStart = () => {
@@ -78,6 +83,23 @@ const Focus = () => {
         timer.reset(initialTime);
         setSessionStartTime(null);
         setSessionType('focus');
+    };
+
+    const handleModeAction = (type) => {
+        if (sessionType === type) {
+            if (timer.isRunning) {
+                if (timer.isPaused) {
+                    timer.resume();
+                } else {
+                    timer.pause();
+                }
+            } else {
+                handleStart();
+            }
+        } else {
+            shouldStartRef.current = true;
+            setSessionType(type);
+        }
     };
 
     const formatTime = (seconds) => {
@@ -112,8 +134,7 @@ const Focus = () => {
                     </motion.div>
 
                     {/* Pomodoro Preset Selector */}
-                    {!timer.isRunning && (
-                        <motion.div
+                    <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             className="mb-8 flex justify-center gap-4"
@@ -129,10 +150,9 @@ const Focus = () => {
                                 </NeumorphicButton>
                             ))}
                         </motion.div>
-                    )}
 
                     {/* Custom Inputs */}
-                    {selectedPreset === 'Custom' && !timer.isRunning && (
+                    {selectedPreset === 'Custom' && (
                         <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
@@ -220,18 +240,37 @@ const Focus = () => {
                         transition={{ delay: 0.3 }}
                         className="mt-8 grid grid-cols-2 gap-4"
                     >
-                        <NeumorphicCard className="text-center">
-                            <div className="text-sm text-graphite-500 mb-1">Focus Duration</div>
-                            <div className="text-2xl font-bold text-coral-500">
+                        <NeumorphicButton
+                            onClick={() => handleModeAction('focus')}
+                            className={`flex-col items-center p-6 h-auto ${sessionType === 'focus' ? 'ring-2 ring-coral-400' : ''}`}
+                            variant={sessionType === 'focus' ? 'primary' : 'secondary'}
+                        >
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-sm ${sessionType === 'focus' ? 'text-coral-500' : 'text-graphite-500'} opacity-80`}>Focus Duration</span>
+                                {sessionType === 'focus' && timer.isRunning && (
+                                    timer.isPaused ? <FiPlay size={14} className="text-coral-500" /> : <FiPause size={14} className="text-coral-500" />
+                                )}
+                            </div>
+                            <div className={`text-2xl font-bold ${sessionType === 'focus' ? 'text-coral-500' : 'text-graphite-500'}`}>
                                 {preset.focus / 60} min
                             </div>
-                        </NeumorphicCard>
-                        <NeumorphicCard className="text-center">
-                            <div className="text-sm text-graphite-500 mb-1">Break Duration</div>
-                            <div className="text-2xl font-bold text-coral-500">
+                        </NeumorphicButton>
+
+                        <NeumorphicButton
+                            onClick={() => handleModeAction('break')}
+                            className={`flex-col items-center p-6 h-auto ${sessionType === 'break' ? 'ring-2 ring-emerald-400' : ''}`}
+                            variant={sessionType === 'break' ? 'primary' : 'secondary'}
+                        >
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-sm ${sessionType === 'break' ? 'text-emerald-500' : 'text-graphite-500'} opacity-80`}>Break Duration</span>
+                                {sessionType === 'break' && timer.isRunning && (
+                                    timer.isPaused ? <FiPlay size={14} className="text-emerald-500" /> : <FiPause size={14} className="text-emerald-500" />
+                                )}
+                            </div>
+                            <div className={`text-2xl font-bold ${sessionType === 'break' ? 'text-emerald-500' : 'text-graphite-500'}`}>
                                 {preset.break / 60} min
                             </div>
-                        </NeumorphicCard>
+                        </NeumorphicButton>
                     </motion.div>
                 </motion.div>
             </div>
