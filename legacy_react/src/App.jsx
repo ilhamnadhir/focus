@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { EnergyProvider } from './contexts/EnergyContext';
 import Navbar from './components/layout/Navbar';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -9,6 +10,7 @@ import Focus from './pages/Focus';
 import Tasks from './pages/Tasks';
 import Leaderboard from './pages/Leaderboard';
 import Channels from './pages/Channels';
+import Garden from './pages/Garden';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -33,6 +35,7 @@ function App() {
     return (
         <ThemeProvider>
             <AuthProvider>
+                <EnergyProvider>
                 <Router>
                 <Routes>
                     {/* Public Route */}
@@ -85,12 +88,23 @@ function App() {
                         }
                     />
 
+                    <Route
+                        path="/garden"
+                        element={
+                            <ProtectedRoute>
+                                <Navbar />
+                                <Garden />
+                            </ProtectedRoute>
+                        }
+                    />
+
                     {/* Default Redirect */}
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </Router>
-        </AuthProvider>
+                </EnergyProvider>
+            </AuthProvider>
         </ThemeProvider>
     );
 }

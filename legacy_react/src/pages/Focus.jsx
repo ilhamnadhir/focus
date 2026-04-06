@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { useEnergy } from '../contexts/EnergyContext';
 import { format } from 'date-fns';
 import useTimer from '../hooks/useTimer';
 import CircularProgress from '../components/ui/CircularProgress';
 import NeumorphicButton from '../components/ui/NeumorphicButton';
 import NeumorphicCard from '../components/ui/NeumorphicCard';
 import NeumorphicInput from '../components/ui/NeumorphicInput';
-import { FiPlay, FiPause, FiRotateCcw } from 'react-icons/fi';
+import { FiPlay, FiPause, FiRotateCcw, FiZap } from 'react-icons/fi';
 
 const POMODORO_PRESETS = {
     '25:5': { focus: 25 * 60, break: 5 * 60 },
@@ -17,12 +18,14 @@ const POMODORO_PRESETS = {
 
 const Focus = () => {
     const { user } = useAuth();
+    const { awardEnergy, currentLevel, totalEnergy } = useEnergy();
     const shouldStartRef = React.useRef(false);
     const [selectedPreset, setSelectedPreset] = useState('25:5');
     const [customFocus, setCustomFocus] = useState(25);
     const [customBreak, setCustomBreak] = useState(5);
-    const [sessionType, setSessionType] = useState('focus'); // 'focus' or 'break'
+    const [sessionType, setSessionType] = useState('focus');
     const [sessionStartTime, setSessionStartTime] = useState(null);
+    const [earnedEnergy, setEarnedEnergy] = useState(null);
 
     const preset = selectedPreset === 'Custom' 
         ? { focus: customFocus * 60, break: customBreak * 60 }
@@ -31,7 +34,6 @@ const Focus = () => {
 
     const handleSessionComplete = async () => {
         if (sessionType === 'focus' && sessionStartTime) {
-            // Save focus session to localStorage
             try {
                 const duration = preset.focus;
                 const sessions = JSON.parse(localStorage.getItem('focusSessions') || '[]');
@@ -49,12 +51,16 @@ const Focus = () => {
                     storedUser.totalFocusTime = (storedUser.totalFocusTime || 0) + duration;
                     localStorage.setItem('focusUser', JSON.stringify(storedUser));
                 }
+
+                // Award energy to the tree
+                const earned = awardEnergy(duration);
+                setEarnedEnergy(earned);
+                setTimeout(() => setEarnedEnergy(null), 3000);
             } catch (error) {
                 console.error('Error saving focus session:', error);
             }
         }
 
-        // Switch to break or focus
         if (sessionType === 'focus') {
             setSessionType('break');
         } else {
@@ -116,12 +122,27 @@ const Focus = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center"
                 >
+                    {/* Energy toast */}
+                    <AnimatePresence>
+                        {earnedEnergy && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -20, scale: 0.8 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -20, scale: 0.8 }}
+                                className="fixed top-20 right-6 z-50 bg-gradient-to-r from-amber-400 to-coral-500 text-white font-bold px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2"
+                            >
+                                <FiZap size={18} />
+                                +{earnedEnergy} ⚡ Energy Earned!
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
                     {/* Session Type Indicator */}
                     <motion.div
                         key={sessionType}
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="mb-8"
+                        className="mb-4"
                     >
                         <h1 className="text-4xl font-bold text-graphite-600 mb-2">
                             {sessionType === 'focus' ? '🎯 Focus Time' : '☕ Break Time'}
@@ -131,7 +152,15 @@ const Focus = () => {
                                 ? 'Stay focused and productive'
                                 : 'Take a well-deserved break'}
                         </p>
+                        {/* Mini energy indicator */}
+                        <div className="mt-3 inline-flex items-center gap-2 bg-neu-dark px-4 py-1.5 rounded-full text-sm text-graphite-500">
+                            <span>🌳 Lv {currentLevel}</span>
+                            <span className="w-px h-4 bg-graphite-300" />
+                            <FiZap size={12} className="text-amber-500" />
+                            <span>{totalEnergy.toLocaleString()} ⚡</span>
+                        </div>
                     </motion.div>
+
 
                     {/* Pomodoro Preset Selector */}
                     <motion.div

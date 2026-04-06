@@ -3,12 +3,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useEnergy } from '../../contexts/EnergyContext';
 import NeumorphicButton from '../ui/NeumorphicButton';
 import { FiHome, FiTarget, FiCheckSquare, FiTrendingUp, FiLogOut, FiUser, FiSun, FiMoon, FiUsers } from 'react-icons/fi';
 
 const Navbar = () => {
     const { user, signOut } = useAuth();
     const { isDarkMode, toggleTheme } = useTheme();
+    const { currentLevel, totalEnergy } = useEnergy();
     const location = useLocation();
     const navigate = useNavigate();
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -28,6 +30,7 @@ const Navbar = () => {
         { path: '/tasks', icon: FiCheckSquare, label: 'Tasks' },
         { path: '/leaderboard', icon: FiTrendingUp, label: 'Leaderboard' },
         { path: '/channels', icon: FiUsers, label: 'Channels' },
+        { path: '/garden', icon: null, label: '🌳 Garden', isGarden: true },
     ];
 
     const isActive = (path) => location.pathname === path;
@@ -60,8 +63,14 @@ const Navbar = () => {
                                         }
                   `}
                                 >
-                                    <item.icon size={18} />
-                                    <span className="font-medium hidden md:inline">{item.label}</span>
+                                    {item.isGarden ? (
+                                        <span className="text-base leading-none">{item.label}</span>
+                                    ) : (
+                                        <>
+                                            <item.icon size={18} />
+                                            <span className="font-medium hidden md:inline">{item.label}</span>
+                                        </>
+                                    )}
                                 </motion.div>
                             </Link>
                         ))}
