@@ -16,9 +16,9 @@ dist-ssr
 *.sw?
 
 # Environment
-#.env
-#.env.local
-#.env.production
+.env
+.env.local
+.env.production
 
 # Logs
 logs
