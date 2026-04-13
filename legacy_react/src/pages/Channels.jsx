@@ -28,7 +28,6 @@ const Channels = () => {
             const storedChannels = JSON.parse(localStorage.getItem('focusChannels') || '[]');
             const storedUser = JSON.parse(localStorage.getItem('focusUser') || '{}');
             
-            // Sync current user's time into channels for display locally
             const syncedChannels = storedChannels.map(channel => {
                 const members = channel.members.map(m => 
                     m.uid === user.uid 
